@@ -37,7 +37,7 @@ def new_columns():
             #print(unit)
             weekday = day['day'][0][:3]
             #print( unit, weekday)
-            list_of_IDs.append(weekday +'-'+ str(unit))
+            list_of_IDs.append(str(unit) +'-'+ weekday)
         day['day_id'] = list_of_IDs     
     
     print('new columns were added.')
@@ -62,7 +62,7 @@ def add_checkout(df, customer_nos, date, day):
         trial_id = df.iloc[p_id]['day_id']
         trial_day = df['day'][0][:3]
         #print(p_id, trial_id, trial_day)
-        trial_together = trial_day + '-' + str(p_id)
+        trial_together = (str(p_id) + '-' + trial_day)
         #print(trial_together)
         df_tmp = pd.DataFrame(data=[[p_id, 'checkout', day, trial_together]],
                               index=[pd.to_datetime(f'2019-09-{date} 21:59:00')],
