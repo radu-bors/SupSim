@@ -74,7 +74,11 @@ def add_checkout(df, customer_nos, date, day):
 
 def per_minute(df):
     global total
-    total = df.groupby(['customer_no', 'day']).resample('1Min').ffill()
+    #total.reset_index()
+    #total = total.groupby(['day_id']).resample('1Min').ffill()
+    total = total.groupby(['day_id'])['location'].resample('1Min').ffill()
+
+    #total = total.groupby(total['day_id'])['location'].resample('1Min').ffill()
     return total
 
 
@@ -100,7 +104,13 @@ if __name__=='__main__':
         filled_data.append(temporary)
         
     total = pd.concat(filled_data)
-    per_minute(total)
+    #per_minute(total)
+    print(total)
+
     
     #print(total.head(35))
-    print(total.head(35))
+    #print(total.head(35))
+    print(len(total))
+    #total.reset_index()
+    
+    total.to_csv('./data/total.csv', sep=',')
