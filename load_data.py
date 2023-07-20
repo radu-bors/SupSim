@@ -2,7 +2,7 @@ import pandas as pd
 import datetime
 
 
-def load_data():
+def load_dataframes():
     
     global days_data, monday, tuesday, wednesday, thursday, friday
     monday = pd.read_csv('./data/monday.csv', sep=';')
@@ -69,12 +69,18 @@ def add_checkout(df, customer_nos, date, day):
                               columns=['customer_no', 'location', 'day', 'day_id'])
         df = pd.concat([df, df_tmp])
     print(f'the checkout was added to the data-frame/customers for {day}.')
+    
     return df
+
+def per_minute(df):
+    global total
+    total = df.groupby(['customer_no', 'day']).resample('1Min').ffill()
+    return total
 
 
 if __name__=='__main__':
     print('*** S T A R T ***')
-    load_data()
+    load_dataframes()
     
     print('\n *** N E W   C O L U M N S ***')
     new_columns()
@@ -94,7 +100,7 @@ if __name__=='__main__':
         filled_data.append(temporary)
         
     total = pd.concat(filled_data)
-    print(total)
-        #get_non_checkout()
-
+    per_minute(total)
     
+    #print(total.head(35))
+    print(total.head(35))
