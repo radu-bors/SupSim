@@ -36,4 +36,4 @@ def generate_prob_matrix(df):
                             loc_now,
                             normalize='index')
 
-    return [loc_before, loc_now]
+    return prob_matrix
