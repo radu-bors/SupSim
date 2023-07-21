@@ -72,45 +72,36 @@ def add_checkout(df, customer_nos, date, day):
     
     return df
 
-def per_minute(df):
-    global total
-    #total.reset_index()
-    #total = total.groupby(['day_id']).resample('1Min').ffill()
-    total = total.groupby(['day_id'])['location'].resample('1Min').ffill()
-
-    #total = total.groupby(total['day_id'])['location'].resample('1Min').ffill()
+def per_minute(total):
+    total = total.groupby(['day_id']).resample('1Min').ffill()
     return total
 
-
-if __name__=='__main__':
+def ETL_data():
     print('*** S T A R T ***')
     load_dataframes()
-    
+
     print('\n *** N E W   C O L U M N S ***')
     new_columns()
-    
+
     print('\n *** A D D   N O   C H E C K O U T ***')
     customers_to_checkout = []
     for day in days_data:
         customers_to_checkout.append(get_non_checkout(day))
-        
+    
     filled_data = []
     weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
     date = ['02', '03', '04', '05', '06']
     for i, day in enumerate(days_data):
-        #print(i)
-        #print(day)
         temporary = add_checkout(day, customers_to_checkout[i], date[i], weekdays[i])
         filled_data.append(temporary)
-        
-    total = pd.concat(filled_data)
-    #per_minute(total)
-    print(total)
-
     
-    #print(total.head(35))
-    #print(total.head(35))
-    print(len(total))
-    #total.reset_index()
+    total = pd.concat(filled_data)
+    total = per_minute(total)
+    
+    total = total.droplevel('day_id')
+    total = total.reset_index(names = 'timestamp')
     
     total.to_csv('./data/total.csv', sep=',')
+    
+    return total
+    
